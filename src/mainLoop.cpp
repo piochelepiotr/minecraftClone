@@ -2,7 +2,7 @@
 
 int main(void)
 {
-    DisplayManager displayManager(800, 800, "Triangle");
+    DisplayManager displayManager(1200, 800, "Triangle");
     if(!displayManager.createDisplay()) return -1;
     displayManager.mainLoop();
 }

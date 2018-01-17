@@ -11,6 +11,7 @@
 #include "loader.h"
 #include "renderer.h"
 #include "models/rawModel.h"
+#include "shaders/staticShader.h"
 
 class DisplayManager
 {
@@ -21,7 +22,6 @@ class DisplayManager
         void mainLoop();
 
     private:
-        void display();
         int m_width;
         int m_height;
         std::string m_title;
@@ -29,7 +29,6 @@ class DisplayManager
         glm::mat4 m_modelview;
         sf::Window *m_window;
         Loader m_loader;
-        Renderer m_renderer;
 };
 
 #endif

@@ -9,7 +9,8 @@
 class Entity
 {
     public:
-        Entity(glm::vec3 position, TexturedModel *model, float rotX, float rotY, float rotZ, float scale);
+        Entity(glm::vec3 position, TexturedModel *model, float rotX, float rotY, float rotZ, float scale, int textureIndex);
+        Entity();
         virtual ~Entity();
 
         glm::vec3 getposition() { return m_position; }
@@ -26,10 +27,15 @@ class Entity
         void setscale(float scale) { m_scale = scale; }
         void increasePosition(float dx, float dy, float dz);
         void increaseRotation(float dx, float dy, float dz);
+        void move();
 
-    protected:
+        int getTextureIndex() const;
+        void setTextureIndex(int textureIndex);
+        float getTextureXOffset();
+        float getTextureYOffset();
 
-    private:
+protected:
+        int m_textureIndex;
         glm::vec3 m_position;
         TexturedModel *m_model;
         float m_rotX;

@@ -1,12 +1,12 @@
-#include "staticShader.h"
+#include "terrainshader.h"
 #include <iostream>
 #include <GL/glew.h>
 #include "toolbox/maths.h"
 
-const std::string StaticShader::VERTEX_FILE = "shaders/shaderEntity.vert";
-const std::string StaticShader::FRAGMENT_FILE = "shaders/shaderEntity.frag";
+const std::string TerrainShader::VERTEX_FILE = "shaders/shaderTerrain.vert";
+const std::string TerrainShader::FRAGMENT_FILE = "shaders/shaderTerrain.frag";
 
-StaticShader::StaticShader() : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE)
+TerrainShader::TerrainShader() : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE)
 {
     bindAttributes();
     glLinkProgram(m_programID);
@@ -14,14 +14,14 @@ StaticShader::StaticShader() : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE)
     getAllUniformLocations();
 }
 
-void StaticShader::bindAttributes()
+void TerrainShader::bindAttributes()
 {
     bindAttribute(0, "position");
     bindAttribute(1, "textureCoords");
     bindAttribute(2, "normal");
 }
 
-void StaticShader::getAllUniformLocations()
+void TerrainShader::getAllUniformLocations()
 {
     m_location_transforamtionMatrix = getUniformLocation("transformationMatrix");
     m_location_projectionMatrix = getUniformLocation("projectionMatrix");
@@ -31,28 +31,26 @@ void StaticShader::getAllUniformLocations()
     m_location_shineDamper = getUniformLocation("shineDamper");
     m_location_reflectivity = getUniformLocation("shineReflectivity");
     m_location_skyColour = getUniformLocation("skyColour");
-    m_location_numberOfRows = getUniformLocation("numberOfRows");
-    m_location_textureOffset = getUniformLocation("textureOffset");
 }
 
-void StaticShader::loadTransformationMatrix(glm::mat4 & transformationMatrix)
+void TerrainShader::loadTransformationMatrix(glm::mat4 & transformationMatrix)
 {
     loadMatrix(m_location_transforamtionMatrix, transformationMatrix);
 }
 
-void StaticShader::loadProjectionMatrix(glm::mat4 & projectionMatrix)
+void TerrainShader::loadProjectionMatrix(glm::mat4 & projectionMatrix)
 {
     loadMatrix(m_location_projectionMatrix, projectionMatrix);
 }
 
 
-void StaticShader::loadViewMatrix(Camera const& camera)
+void TerrainShader::loadViewMatrix(Camera const& camera)
 {
     glm::mat4 viewMatrix = Maths::createViewMatrix(camera);
     loadMatrix(m_location_viewMatrix, viewMatrix);
 }
 
-void StaticShader::loadLight(Light const& light)
+void TerrainShader::loadLight(Light const& light)
 {
     glm::vec3 pos = light.position();
     glm::vec3 colour = light.colour();
@@ -60,23 +58,13 @@ void StaticShader::loadLight(Light const& light)
     loadVector(m_location_lightColour, colour);
 }
 
-void StaticShader::loadShineVariables(float shineDamper, float reflectivity)
+void TerrainShader::loadShineVariables(float shineDamper, float reflectivity)
 {
     loadFloat(m_location_shineDamper, shineDamper);
     loadFloat(m_location_reflectivity, reflectivity);
 }
 
-void StaticShader::loadSkyColour(glm::vec3 const& skyColour)
+void TerrainShader::loadSkyColour(glm::vec3 const& skyColour)
 {
     loadVector(m_location_skyColour, skyColour);
-}
-
-void StaticShader::loadTextureOffset(float xOffset, float yOffset)
-{
-    loadVector2(m_location_textureOffset, glm::vec2(xOffset, yOffset));
-}
-
-void StaticShader::loadNumberOfRows(int numberOfRows)
-{
-    loadFloat(m_location_numberOfRows, (float) numberOfRows);
 }

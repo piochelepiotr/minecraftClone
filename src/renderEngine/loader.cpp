@@ -7,12 +7,13 @@ Loader::Loader()
 
 }
 
-RawModel * Loader::loadToVao(float *positions, int size_position, float *textCoor, int sizeTextCoor, int *indices, int size_indices)
+RawModel * Loader::loadToVao(float *positions, int size_position, float *textCoor, int sizeTextCoor, int *indices, int size_indices, float *normals, int size_normals)
 {
     GLuint vaoID = createVao();
     bindIndicesBuffer(indices, size_indices);
     storeDataInAttributeList(0, 3, positions, size_position);
     storeDataInAttributeList(1, 2, textCoor, sizeTextCoor);
+    storeDataInAttributeList(2, 3, normals, size_normals);
     unbindVao();
     return new RawModel(vaoID, size_indices);
 }
@@ -26,8 +27,8 @@ GLuint Loader::loadTexture(std::string const& fileName)
         std::cout << "Could not load " << fileName.c_str() << std::endl;
         return 0;
     }
-    img_data.flipHorizontally();
-    img_data.flipVertically();
+    //img_data.flipHorizontally();
+    //img_data.flipVertically();
 
     glGenTextures(1, &id);
     m_textIDs.push_back(id);

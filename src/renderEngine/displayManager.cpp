@@ -4,9 +4,16 @@
 #include <SFML/OpenGL.hpp>
 #include "shaders/shaderProgram.h"
 #include "textures/modelTexture.h"
-#include "shaders/staticShader.h"
+#include "entities/camera.h"
+#include "renderEngine/objloader.h"
+#include "renderEngine/masterrenderer.h"
+#include "terrain/terrain.h"
+#include <vector>
+#include "entities/player.h"
+#include "world/world.h"
 
 using namespace glm;
+using namespace std;
 
 DisplayManager::DisplayManager(int width, int height, std::string title) :
     m_width(width),
@@ -27,7 +34,7 @@ bool DisplayManager::createDisplay()
     settings.majorVersion = 4;
     settings.minorVersion = 5;
 
-    m_window = new sf::Window(sf::VideoMode(800, 600), "OpenGL", sf::Style::Default, settings);
+    m_window = new sf::Window(sf::VideoMode(m_width, m_height), "OpenGL", sf::Style::Default, settings);
 	m_window->setVerticalSyncEnabled(true);
     m_window->setActive(true);
     glewExperimental=GL_TRUE;
@@ -43,30 +50,12 @@ bool DisplayManager::createDisplay()
 
 void DisplayManager::mainLoop()
 {
-    float vertices [] = {
-        -0.5, 0.5, 0,
-        -0.5, -0.5, 0,
-        0.5, -0.5, 0,
-        0.5, 0.5, 0
-    };
+    World world(&m_loader);
+    Camera camera(vec3(0,8,10));
+    Light light(vec3(0,5000,3000), vec3(1,1,1));
+    Player player(vec3(0,17*Chunk::BLOCK_SIZE,0), &m_loader);
 
-    float texCoo [] = {
-        0, 0,
-        0, 1,
-        1, 1,
-        1, 0
-    };
-
-    int indices [] = {
-        0, 1, 2,
-        0, 2, 3,
-    };
-    RawModel *rawModel = m_loader.loadToVao(vertices, 12,texCoo, 8, indices, 6);
-    StaticShader shader;
-    ModelTexture texture(m_loader.loadTexture("textures/grass.png"));
-    TexturedModel texturedModel(rawModel, &texture);
-
-    Entity entity(vec3(-1,0,0),&texturedModel, 0.0, 0.0, 0.0, 1.0);
+    MasterRenderer masterRenderer(m_width, m_height);
 
     bool running = true;
     while (running)
@@ -87,24 +76,21 @@ void DisplayManager::mainLoop()
             }
         }
 
-        m_renderer.prepare();
-        shader.start();
-        m_renderer.render(&entity, shader);
-        shader.stop();
+        //entity.increasePosition(0, 0, -0.01);
+        //entity.increaseRotation(0.00, 0.02, 0.00);
+        //camera.move();
+        player.move();
+        camera.lockOnPlayer(&player);
 
+        //masterRenderer.processEntity(&entity);
+        masterRenderer.processEntity(&player);
+        masterRenderer.processEntities(world.getBlocks());
+        masterRenderer.render(light, camera);
         m_window->display();
     }
-
-    //delete rawModel;
-}
-
-void DisplayManager::display()
-{
-    m_modelview = lookAt(vec3(2, 2, 2), vec3(0, 0, 0), vec3(0, 1, 0));
 }
 
 DisplayManager::~DisplayManager()
 {
-    if(m_window)
-        delete m_window;
+    delete m_window;
 }

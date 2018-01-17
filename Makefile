@@ -13,7 +13,19 @@ OBJS=src/renderEngine/displayManager.o \
 	 src/textures/modelTexture.o \
 	 src/models/texturedModel.o \
 	 src/toolbox/maths.o \
-	 src/entities/Entity.o
+         src/toolbox/vertex.o \
+         src/entities/Entity.o \
+         src/entities/camera.o \
+         src/entities/light.o \
+         src/entities/player.o \
+         src/renderEngine/objloader.o \
+         src/renderEngine/masterrenderer.o \
+         src/renderEngine/terrainrenderer.o \
+         src/shaders/terrainshader.o \
+         src/world/world.o \
+         src/world/chunk.o \
+         src/world/block.o \
+         src/terrain/terrain.o
 
 all: $(TARGET)
 
@@ -22,4 +34,4 @@ $(TARGET) : $(OBJS)
 
 clean:
 	rm -f $(TARGET)
-	rm -rf *.o
+	rm -f $(OBJS)

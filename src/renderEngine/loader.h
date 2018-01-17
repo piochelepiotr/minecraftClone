@@ -16,7 +16,8 @@ class Loader
     public:
         Loader();
         ~Loader();
-        RawModel *loadToVao(float *positions, int size_position, float *textCoor, int sizeTextCoor, int *indices, int size_indices);
+        RawModel *loadToVao(float *positions, int size_position, float *textCoor, int sizeTextCoor,
+                            int *indices, int size_indices, float *normals, int size_normals);
         GLuint loadTexture(std::string const& fileName);
     private:
         GLuint createVao();

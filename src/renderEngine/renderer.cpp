@@ -1,42 +1,67 @@
 #include "renderer.h"
 #include "toolbox/maths.h"
+#include <glm/glm.hpp>
+#include <glm/gtx/transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <iostream>
 
-Renderer::Renderer()
+EntityRenderer::EntityRenderer(StaticShader *shader, glm::mat4 const& projectionMatrix) :
+    m_shader(shader),
+    m_projectionMatrix(projectionMatrix)
+{
+}
+
+EntityRenderer::~EntityRenderer()
 {
 
 }
 
-Renderer::~Renderer()
-{
 
-}
-
-void Renderer::prepare()
+void EntityRenderer::prepareTexturedModel(TexturedModel *texturedModel)
 {
-    static const float black[] = { 1.0f, 1.0f, 0.0f, 0.0f };
-    glClearBufferfv(GL_COLOR, 0, black);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-}
-
-void Renderer::render(Entity *entity, StaticShader & shader)
-{
-    TexturedModel *texturedModel = entity->getmodel();
     RawModel *model = texturedModel->getModel();
+    ModelTexture *texture = texturedModel->getTexture();
     glBindVertexArray(model->getVaoID());
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(2);
+    m_shader->loadShineVariables(texture->getShineDamper(), texture->getReflectivity());
+    m_shader->loadNumberOfRows(texturedModel->getTexture()->getNumberRows());
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texturedModel->getTexture()->getTextID());
+}
+
+void EntityRenderer::unbindTexturedModel()
+{
+    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(2);
+    glBindVertexArray(0);
+}
+
+void EntityRenderer::prepareEntity(Entity *entity)
+{
     glm::mat4 transformationMatrix = Maths::createTransformationMatrix(entity->getposition(),
     entity->getrotX(),
     entity->getrotY(),
     entity->getrotZ(),
     entity->getscale());
-    shader.loadTransformationMatrix(transformationMatrix);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texturedModel->getTexture()->getTextID());
-    //glDrawArrays(GL_TRIANGLES, 0, model->getVertexCount());
-    glDrawElements(GL_TRIANGLES, model->getVertexCount(), GL_UNSIGNED_INT, 0);
-    glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);
-    glBindVertexArray(0);
+    m_shader->loadProjectionMatrix(m_projectionMatrix);
+    m_shader->loadTransformationMatrix(transformationMatrix);
+    m_shader->loadTextureOffset(entity->getTextureXOffset(), entity->getTextureYOffset());
+}
+
+void EntityRenderer::render(std::map<TexturedModel*, std::vector<Entity*>> const& entities)
+{
+    for(auto & v : entities)
+    {
+        prepareTexturedModel(v.first);
+        for(auto & entity : v.second)
+        {
+            prepareEntity(entity);
+            glDrawElements(GL_TRIANGLES, v.first->getModel()->getVertexCount(), GL_UNSIGNED_INT, 0);
+        }
+        unbindTexturedModel();
+    }
 }
 

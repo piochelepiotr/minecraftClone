@@ -4,3 +4,8 @@ src/renderEngine
 src/shaders
 src/textures
 src/toolbox
+src
+.
+src/terrain
+shaders
+src/world
