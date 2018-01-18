@@ -40,8 +40,12 @@ src/terrain/terrain.cpp
 src/terrain/terrain.h
 src/textures/modelTexture.cpp
 src/textures/modelTexture.h
+src/toolbox/hash.cpp
+src/toolbox/hash.h
 src/toolbox/maths.cpp
 src/toolbox/maths.h
+src/toolbox/perlinnoise.cpp
+src/toolbox/perlinnoise.h
 src/toolbox/vertex.cpp
 src/toolbox/vertex.h
 src/world/block.cpp

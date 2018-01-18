@@ -14,6 +14,8 @@ OBJS=src/renderEngine/displayManager.o \
 	 src/models/texturedModel.o \
 	 src/toolbox/maths.o \
          src/toolbox/vertex.o \
+         src/toolbox/perlinnoise.o \
+         src/toolbox/hash.o \
          src/entities/Entity.o \
          src/entities/camera.o \
          src/entities/light.o \

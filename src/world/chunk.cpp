@@ -1,34 +1,41 @@
 #include "chunk.h"
 #include <iostream>
+#include "toolbox/perlinnoise.h"
 
 using namespace std;
 
-const float Chunk::BLOCK_SIZE = 4;
+const float Chunk::BLOCK_SIZE = 1;
 
-Chunk::Chunk(Loader *loader)
+Chunk::Chunk(int startX, int startZ, Loader *loader)
 {
     for(int x = 0; x < CHUNK_SIZE; x++)
     {
-        for(int y = 0; y < CHUNK_SIZE; y++)
+        for(int z = 0; z < CHUNK_SIZE; z++)
         {
-            for(int z = 0; z < CHUNK_SIZE; z++)
+            int height = (int) (PerlinNoise::noise((float) (x+startX) / BIOME_SIZE, (float) (z+startZ) / BIOME_SIZE)*CHUNK_SIZE);
+            for(int y = 0; y < height; y++)
             {
                 m_blocks[x][y][z] = Block::STONE;
             }
-        }
-    }
-    for(int x = 0; x < CHUNK_SIZE; x++)
-    {
-        for(int y = 0; y < CHUNK_SIZE; y++)
-        {
-
-            int height = rand() % 5 + 1;
-            for(int z = CHUNK_SIZE-height; z < CHUNK_SIZE; z++)
+            for(int y = height; y < CHUNK_SIZE; y++)
             {
                 m_blocks[x][y][z] = Block::AIR;
             }
         }
     }
+    /*
+    for(int x = 0; x < CHUNK_SIZE; x++)
+    {
+        for(int y = 0; y < CHUNK_SIZE; y++)
+        {
+
+            int height = ;
+            for(int z = CHUNK_SIZE-height; z < CHUNK_SIZE; z++)
+            {
+                m_blocks[x][y][z] = Block::AIR;
+            }
+        }
+    }*/
     buildFaces(loader);
 }
 

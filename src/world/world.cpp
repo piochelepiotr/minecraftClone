@@ -6,7 +6,7 @@ const std::string World::TEXTURE_NAME = "textures/textures.png";
 
 World::World(Loader *loader)
 {
-    m_chunks = new Chunk(loader);
+    m_chunks = new Chunk(0, 0, loader);
     m_texture = new ModelTexture(loader->loadTexture(TEXTURE_NAME));
     m_texture->setNumberRows(2);
     m_rawModel = m_chunks->getModel();// OBJLoader::loadObjModel(OBJECT_NAME, loader);

@@ -7,11 +7,12 @@
 #include <vector>
 #include <glm/glm.hpp>
 #define CHUNK_SIZE 16
+#define BIOME_SIZE 32
 
 class Chunk
 {
 public:
-    Chunk(Loader *loader);
+    Chunk(int startX, int startZ, Loader *loader);
     RawModel *getModel() const { return m_rawModel; }
     const static float BLOCK_SIZE;
 private:
