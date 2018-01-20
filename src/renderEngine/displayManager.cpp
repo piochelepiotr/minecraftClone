@@ -11,6 +11,8 @@
 #include <vector>
 #include "entities/player.h"
 #include "world/world.h"
+#include "guis/guitexture.h"
+#include "toolbox/mousepicker.h"
 
 using namespace glm;
 using namespace std;
@@ -53,15 +55,19 @@ void DisplayManager::mainLoop()
     World world(&m_loader);
     Camera camera(vec3(0,8,10));
     Light light(vec3(0,5000,3000), vec3(1,1,1));
-    Player player(vec3(0,17*Chunk::BLOCK_SIZE,0), &m_loader);
-
-    MasterRenderer masterRenderer(m_width, m_height);
+    Player player(vec3(0,17,0), &m_loader, &world);
+    MasterRenderer masterRenderer(m_width, m_height, &m_loader);
+    m_window->setMouseCursorVisible(false);
+    GuiTexture gui(m_loader.loadTexture("textures/cursor.png"), glm::vec2(0.02, 0.03), glm::vec2(0,0));
+    MousePicker mousePicker(&camera, &world, masterRenderer.projectionMatrix(), m_width, m_height);
 
     bool running = true;
+    sf::Vector2i center(m_window->getSize().x/2, m_window->getSize().y/2);
     while (running)
     {
         // gestion des évènements
         sf::Event event;
+        bool firstMouseMove = true;
         while (m_window->pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
@@ -72,19 +78,55 @@ void DisplayManager::mainLoop()
             else if (event.type == sf::Event::Resized)
             {
                 // on ajuste le viewport lorsque la fenêtre est redimensionnée
+                m_width = event.size.width;
+                m_height = event.size.height;
                 glViewport(0, 0, event.size.width, event.size.height);
+                center = sf::Vector2i(m_window->getSize().x/2, m_window->getSize().y/2);
+                mousePicker.updateWindowSize(m_width, m_height);
+            }
+            else if(event.type == sf::Event::MouseMoved)
+            {
+                int moveY = event.mouseMove.y - center.y;
+                int moveX = -(event.mouseMove.x - center.x);
+                if(moveX != 0 or moveY != 0)
+                {
+                    if(!firstMouseMove)
+                    {
+                        float pitch = moveY;
+                        pitch /= 100;
+                        float roY = moveX;
+                        roY /= 200;
+                        camera.setPitch(camera.pitch() + pitch);
+                        player.setrotY(player.getrotY()+roY);
+                    }
+                    sf::Mouse::setPosition(center, *m_window);
+                }
+                firstMouseMove = false;
+            }
+            else if(event.type == sf::Event::MouseButtonPressed)
+            {
+                int x,y,z;
+                if(mousePicker.getAimedBlock(x, y, z))
+                {
+                    std::cout << "got it !!" << std::endl;
+                    world.setBlock(x, y, z, Block::AIR);
+                }
+                else
+                {
+                    std::cout << "sorry, not today" << std::endl;
+                }
             }
         }
 
-        //entity.increasePosition(0, 0, -0.01);
-        //entity.increaseRotation(0.00, 0.02, 0.00);
-        //camera.move();
+        //glm::vec3 mouseRay = mousePicker.currentRay();
+        //std::cout << "mouse Ray : " << mouseRay.x << ";" << mouseRay.y << ";" << mouseRay.z << std::endl;
+
         player.move();
         camera.lockOnPlayer(&player);
 
-        //masterRenderer.processEntity(&entity);
         masterRenderer.processEntity(&player);
-        masterRenderer.processEntities(world.getBlocks());
+        masterRenderer.processEntities(world.getChunks());
+        masterRenderer.processGui(&gui);
         masterRenderer.render(light, camera);
         m_window->display();
     }

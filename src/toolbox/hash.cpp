@@ -1,4 +1,5 @@
 #include "hash.h"
+#include <iostream>
 
 using namespace glm;
 
@@ -7,8 +8,8 @@ Hash::Hash(int seed)
     //this is certainly not good at all
     for(int i = 0; i < SIZE_HASH_TABLE; i++)
     {
-        m_hash_table[i] = seed;
-        seed *= 2;
+        m_hash_table[i] = rand();
+        seed *= 2 + 769;
         if(seed > 100000000)
         {
             seed /= 15;
@@ -41,4 +42,6 @@ glm::vec2 Hash::hashToVec(int hash)
     case 3:
         return vec2(-1,-1);
     }
+    std::cout << "Impossible" << std::endl;
+    return vec2(0,0);
 }

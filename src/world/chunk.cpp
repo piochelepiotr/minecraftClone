@@ -4,18 +4,25 @@
 
 using namespace std;
 
-const float Chunk::BLOCK_SIZE = 1;
+const int Chunk::m_numberRowsTextures = 2;
 
-Chunk::Chunk(int startX, int startZ, Loader *loader)
+Chunk::Chunk(int startX, int startZ, ModelTexture *texture, Loader *loader) : Entity()
 {
+    m_position = glm::vec3(startX, 0, startZ);
+    m_loader = loader;
+    std::cout << startX << " " << startZ << std::endl;
     for(int x = 0; x < CHUNK_SIZE; x++)
     {
         for(int z = 0; z < CHUNK_SIZE; z++)
         {
             int height = (int) (PerlinNoise::noise((float) (x+startX) / BIOME_SIZE, (float) (z+startZ) / BIOME_SIZE)*CHUNK_SIZE);
-            for(int y = 0; y < height; y++)
+            for(int y = 0; y < height-1; y++)
             {
-                m_blocks[x][y][z] = Block::STONE;
+                m_blocks[x][y][z] = Block::DIRT;
+            }
+            if(height > 0)
+            {
+                m_blocks[x][height-1][z] = Block::GRASS;
             }
             for(int y = height; y < CHUNK_SIZE; y++)
             {
@@ -23,20 +30,14 @@ Chunk::Chunk(int startX, int startZ, Loader *loader)
             }
         }
     }
-    /*
-    for(int x = 0; x < CHUNK_SIZE; x++)
-    {
-        for(int y = 0; y < CHUNK_SIZE; y++)
-        {
-
-            int height = ;
-            for(int z = CHUNK_SIZE-height; z < CHUNK_SIZE; z++)
-            {
-                m_blocks[x][y][z] = Block::AIR;
-            }
-        }
-    }*/
     buildFaces(loader);
+    m_model = new TexturedModel(m_rawModel, texture);
+}
+
+Chunk::~Chunk()
+{
+    delete m_model;
+    delete m_rawModel;
 }
 
 void Chunk::buildFaces(Loader *loader)
@@ -66,62 +67,68 @@ void Chunk::buildFaces(Loader *loader)
                 //up
                 if(!(b == a || (y + 1 < CHUNK_SIZE && m_blocks[x][y+1][z] != a)))
                 {
+                    //std::cout << "up" << std::endl;
                     glm::vec3 n(0,1,0);
-                    glm::vec3 p1(BLOCK_SIZE*(x  ), BLOCK_SIZE*(y+1), BLOCK_SIZE*(z  ));
-                    glm::vec3 p2(BLOCK_SIZE*(x+1), BLOCK_SIZE*(y+1), BLOCK_SIZE*(z  ));
-                    glm::vec3 p3(BLOCK_SIZE*(x+1), BLOCK_SIZE*(y+1), BLOCK_SIZE*(z+1));
-                    glm::vec3 p4(BLOCK_SIZE*(x  ), BLOCK_SIZE*(y+1), BLOCK_SIZE*(z+1));
-                    addFace(vertices, textures, normals, indexes, p1, p2, p3, p4, n);
+                    glm::vec3 p1(x  , y+1, z  );
+                    glm::vec3 p2(x+1, y+1, z  );
+                    glm::vec3 p3(x+1, y+1, z+1);
+                    glm::vec3 p4(x  , y+1, z+1);
+                    addFace(vertices, textures, normals, indexes, p1, p2, p3, p4, n, b);
                 }
                 //bottom
                 if(!(b == a || (y - 1 > 0 && m_blocks[x][y-1][z] != a)))
                 {
+                    //std::cout << "bottom" << std::endl;
                     glm::vec3 n(0,-1,0);
-                    glm::vec3 p1(BLOCK_SIZE*(x  ), BLOCK_SIZE*(y), BLOCK_SIZE*(z  ));
-                    glm::vec3 p2(BLOCK_SIZE*(x+1), BLOCK_SIZE*(y), BLOCK_SIZE*(z  ));
-                    glm::vec3 p3(BLOCK_SIZE*(x+1), BLOCK_SIZE*(y), BLOCK_SIZE*(z+1));
-                    glm::vec3 p4(BLOCK_SIZE*(x  ), BLOCK_SIZE*(y), BLOCK_SIZE*(z+1));
-                    addFace(vertices, textures, normals, indexes, p1, p2, p3, p4, n);
+                    glm::vec3 p1(x  , y, (z  ));
+                    glm::vec3 p2(x+1, y, (z  ));
+                    glm::vec3 p3(x+1, y, (z+1));
+                    glm::vec3 p4(x  , y, (z+1));
+                    addFace(vertices, textures, normals, indexes, p1, p2, p3, p4, n, b);
                 }
                 //right
                 if(!(b == a || (x + 1 < CHUNK_SIZE && m_blocks[x+1][y][z] != a)))
                 {
+                    //std::cout << "right" << std::endl;
                     glm::vec3 n(1,0,0);
-                    glm::vec3 p1(BLOCK_SIZE*(x+1), BLOCK_SIZE*(y  ), BLOCK_SIZE*(z  ));
-                    glm::vec3 p2(BLOCK_SIZE*(x+1), BLOCK_SIZE*(y+1), BLOCK_SIZE*(z  ));
-                    glm::vec3 p3(BLOCK_SIZE*(x+1), BLOCK_SIZE*(y+1), BLOCK_SIZE*(z+1));
-                    glm::vec3 p4(BLOCK_SIZE*(x+1), BLOCK_SIZE*(y  ), BLOCK_SIZE*(z+1));
-                    addFace(vertices, textures, normals, indexes, p1, p2, p3, p4, n);
+                    glm::vec3 p1((x+1), (y+1), (z+1));
+                    glm::vec3 p2((x+1), (y+1), (z  ));
+                    glm::vec3 p3((x+1), (y  ), (z  ));
+                    glm::vec3 p4((x+1), (y  ), (z+1));
+                    addFace(vertices, textures, normals, indexes, p1, p2, p3, p4, n, b);
                 }
                 //left
                 if(!(b == a || (x - 1 > 0 && m_blocks[x-1][y][z] != a)))
                 {
+                    //std::cout << "left" << std::endl;
                     glm::vec3 n(-1,0,0);
-                    glm::vec3 p1(BLOCK_SIZE*(x), BLOCK_SIZE*(y  ), BLOCK_SIZE*(z  ));
-                    glm::vec3 p2(BLOCK_SIZE*(x), BLOCK_SIZE*(y+1), BLOCK_SIZE*(z  ));
-                    glm::vec3 p3(BLOCK_SIZE*(x), BLOCK_SIZE*(y+1), BLOCK_SIZE*(z+1));
-                    glm::vec3 p4(BLOCK_SIZE*(x), BLOCK_SIZE*(y  ), BLOCK_SIZE*(z+1));
-                    addFace(vertices, textures, normals, indexes, p1, p2, p3, p4, n);
+                    glm::vec3 p1((x), (y+1), (z  ));
+                    glm::vec3 p2((x), (y+1), (z+1));
+                    glm::vec3 p3((x), (y  ), (z+1));
+                    glm::vec3 p4((x), (y  ), (z  ));
+                    addFace(vertices, textures, normals, indexes, p1, p2, p3, p4, n, b);
                 }
                 //front
                 if(!(b == a || (z + 1 < CHUNK_SIZE && m_blocks[x][y][z+1] != a)))
                 {
+                    //std::cout << "front" << std::endl;
                     glm::vec3 n(0,0,1);
-                    glm::vec3 p1(BLOCK_SIZE*(x  ), BLOCK_SIZE*(y  ), BLOCK_SIZE*(z+1));
-                    glm::vec3 p2(BLOCK_SIZE*(x+1), BLOCK_SIZE*(y  ), BLOCK_SIZE*(z+1));
-                    glm::vec3 p3(BLOCK_SIZE*(x+1), BLOCK_SIZE*(y+1), BLOCK_SIZE*(z+1));
-                    glm::vec3 p4(BLOCK_SIZE*(x  ), BLOCK_SIZE*(y+1), BLOCK_SIZE*(z+1));
-                    addFace(vertices, textures, normals, indexes, p1, p2, p3, p4, n);
+                    glm::vec3 p1((x  ), (y+1), (z+1));
+                    glm::vec3 p2((x+1), (y+1), (z+1));
+                    glm::vec3 p3((x+1), (y  ), (z+1));
+                    glm::vec3 p4((x  ), (y  ), (z+1));
+                    addFace(vertices, textures, normals, indexes, p1, p2, p3, p4, n, b);
                 }
                 //back
                 if(!(b == a || (z - 1 > 0 && m_blocks[x][y][z-1] != a)))
                 {
+                    //std::cout << "back" << std::endl;
                     glm::vec3 n(0,0,-1);
-                    glm::vec3 p1(BLOCK_SIZE*(x  ), BLOCK_SIZE*(y  ), BLOCK_SIZE*(z+1));
-                    glm::vec3 p2(BLOCK_SIZE*(x+1), BLOCK_SIZE*(y  ), BLOCK_SIZE*(z+1));
-                    glm::vec3 p3(BLOCK_SIZE*(x+1), BLOCK_SIZE*(y+1), BLOCK_SIZE*(z+1));
-                    glm::vec3 p4(BLOCK_SIZE*(x  ), BLOCK_SIZE*(y+1), BLOCK_SIZE*(z+1));
-                    addFace(vertices, textures, normals, indexes, p1, p2, p3, p4, n);
+                    glm::vec3 p1((x+1), (y+1), (z));
+                    glm::vec3 p2((x  ), (y+1), (z));
+                    glm::vec3 p3((x  ), (y  ), (z));
+                    glm::vec3 p4((x+1), (y  ), (z));
+                    addFace(vertices, textures, normals, indexes, p1, p2, p3, p4, n, b);
                 }
             }
         }
@@ -132,12 +139,33 @@ void Chunk::buildFaces(Loader *loader)
 void Chunk::addFace(std::vector<glm::vec3> &vertices, std::vector<glm::vec2> &textures,
                     std::vector<glm::vec3> &normals, std::vector<int> &indexes,
                     const glm::vec3 &p1, const glm::vec3 &p2, const glm::vec3 &p3,
-                    const glm::vec3 &p4, const glm::vec3 &n)
+                    const glm::vec3 &p4, const glm::vec3 &n,
+                    Block::ID b)
 {
+    if(b == Block::GRASS)
+    {
+        if(n == glm::vec3(0,-1,0))
+        {
+            b = Block::DIRT;
+        }
+        else if(n != glm::vec3(0,1,0))
+        {
+            b = Block::GRASS_SIDE;
+        }
+    }
+    int textureX = (int) b % m_numberRowsTextures;
+    int textureY = (int) b / m_numberRowsTextures;
+    float offsetTextureX = (float) textureX / (float) m_numberRowsTextures;
+    float offsetTextureY = (float) textureY / (float) m_numberRowsTextures;
+    glm::vec2 offsetTexture(offsetTextureX, offsetTextureY);
     glm::vec2 t1(0,0);
     glm::vec2 t2(1,0);
     glm::vec2 t3(1,1);
     glm::vec2 t4(0,1);
+    t1 = t1/((float) m_numberRowsTextures)  + offsetTexture;
+    t2 = t2/((float) m_numberRowsTextures) + offsetTexture;
+    t3 = t3/((float) m_numberRowsTextures) + offsetTexture;
+    t4 = t4/((float) m_numberRowsTextures) + offsetTexture;
     vertices.push_back(p1);
     vertices.push_back(p2);
     vertices.push_back(p3);
@@ -173,7 +201,7 @@ void Chunk::buildRawModel(Loader *loader, std::vector<glm::vec3> &vertices, std:
     float *texturesArray = new float[size*2];
     float *normalsArray = new float[size*3];
     int *indexesArray = new int[ind_size];
-    for(uint i = 0; i < size; i++)
+    for(int i = 0; i < size; i++)
     {
         verticesArray[3*i] = vertices[i].x;
         verticesArray[3*i+1] = vertices[i].y;
@@ -184,9 +212,33 @@ void Chunk::buildRawModel(Loader *loader, std::vector<glm::vec3> &vertices, std:
         normalsArray[3*i+1] = normals[i].y;
         normalsArray[3*i+2] = normals[i].z;
     }
-    for(uint i = 0; i < ind_size; i++)
+    for(int i = 0; i < ind_size; i++)
     {
         indexesArray[i] = indexes[i];
     }
     m_rawModel = loader->loadToVao(verticesArray, size*3, texturesArray, size*2 ,indexesArray, ind_size, normalsArray, size*3);
+}
+
+
+float Chunk::height(float x, float z) const
+{
+    int X = (int) x;
+    int Z = (int) z;
+    for(int y = CHUNK_SIZE; y > 0; y--)
+    {
+        if(m_blocks[X][y-1][Z] != Block::AIR)
+        {
+            return y;
+        }
+    }
+    return 0;
+}
+
+void Chunk::setBlock(int x, int y, int z, Block::ID b)
+{
+    std::cout << "SETTING BLOCK !!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
+    m_blocks[x][y][z] = b;
+    delete m_rawModel;
+    buildFaces(m_loader);
+    m_model->setModel(m_rawModel);
 }

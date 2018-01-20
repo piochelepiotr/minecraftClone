@@ -62,7 +62,7 @@ def noise(x, y, g):
     return (av/2) + 0.5
     
 def randg():
-    r = random.randint(0,7)
+    r = random.randint(0,3)
     (x,y) = (0,0)
     if r == 0:
         (x,y) = (1,1)
@@ -72,14 +72,14 @@ def randg():
         (x,y) = (1,-1)
     elif r == 3:
         (x,y) = (-1,-1)
-    elif r == 4:
-        (x,y) = (0,1)
-    elif r == 5:
-        (x,y) = (0,-1)
-    elif r == 6:
-        (x,y) = (1,0)
-    elif r == 7:
-        (x,y) = (-1,0)
+    #elif r == 4:
+    #    (x,y) = (0,1)
+    #elif r == 5:
+    #    (x,y) = (0,-1)
+    #elif r == 6:
+    #    (x,y) = (1,0)
+    #elif r == 7:
+    #    (x,y) = (-1,0)
     else:
         print("Erreur")
     return (x,y)
@@ -93,11 +93,16 @@ def main():
     s = sizeOne*c
     g = [[randg() for x in range(c+1)] for i in range(c+1)]
     img = Image.new('RGB', (s, s), "black")
+    t = []
     pixels = img.load()
     for x in range(s):
         for y in range(s):
             color = noise(x/sizeOne, y/sizeOne, g)
+            t.append(color)
+            print(color)
             pixels[x,y] = int(color*255)
+    print("max: ", max(t))
+    print("min: ", min(t))
     img.save("image.png")
     img.show()
 

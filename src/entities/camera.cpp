@@ -3,11 +3,11 @@
 
 Camera::Camera(const glm::vec3 &position) :
     m_position(position),
-    m_pitch(0),
+    m_pitch(0.0),
     m_yaw(0),
     m_roll(0),
-    m_followDistance(20),
-    m_cameraHeight(10)
+    m_followDistance(-1),
+    m_cameraHeight(2)
 {
 
 }
@@ -42,5 +42,10 @@ void Camera::lockOnPlayer(Player *player)
     m_position.y = player->getposition().y + m_cameraHeight;
     m_position.z = player->getposition().z + movement.z;
     m_yaw = -player->getrotY();
+}
+
+void Camera::setPitch(float pitch)
+{
+    m_pitch = pitch;
 }
 

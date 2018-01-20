@@ -16,6 +16,8 @@ public:
     float roll() const;
     void  lockOnPlayer(Player *player);
 
+    void setPitch(float pitch);
+
 private:
     glm::vec3 m_position;
     float m_pitch;

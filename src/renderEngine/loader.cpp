@@ -18,6 +18,14 @@ RawModel * Loader::loadToVao(float *positions, int size_position, float *textCoo
     return new RawModel(vaoID, size_indices);
 }
 
+RawModel *Loader::loadToVao(float *positions, int size_position)
+{
+    GLuint vaoID = createVao();
+    storeDataInAttributeList(0, 2, positions, size_position);
+    unbindVao();
+    return new RawModel(vaoID, size_position/2);
+}
+
 GLuint Loader::loadTexture(std::string const& fileName)
 {
     GLuint id;
@@ -34,7 +42,12 @@ GLuint Loader::loadTexture(std::string const& fileName)
     m_textIDs.push_back(id);
     glBindTexture(GL_TEXTURE_2D, id);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img_data.getSize().x, img_data.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, img_data.getPixelsPtr());
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+    //glGenerateMipmap(GL_TEXTURE_2D);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    //glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -1);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glBindTexture(GL_TEXTURE_2D, 0);
     return id;

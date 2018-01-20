@@ -35,13 +35,13 @@ class Entity
         float getTextureYOffset();
 
 protected:
-        int m_textureIndex;
         glm::vec3 m_position;
         TexturedModel *m_model;
         float m_rotX;
         float m_rotY;
         float m_rotZ;
         float m_scale;
+        int m_textureIndex;
 };
 
 #endif // ENTITY_H

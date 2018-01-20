@@ -9,3 +9,4 @@ src
 src/terrain
 shaders
 src/world
+src/guis

@@ -5,7 +5,7 @@
 class Block
 {
 public:
-    enum ID {AIR,STONE};
+    enum ID {DIRT,STONE, GRASS, GRASS_SIDE, AIR};
     Block();
 };
 

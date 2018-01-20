@@ -5,3 +5,8 @@ TexturedModel::TexturedModel(RawModel *model, ModelTexture *texture) :
     m_texture(texture)
 {
 }
+
+void TexturedModel::setModel(RawModel *model)
+{
+    m_model = model;
+}

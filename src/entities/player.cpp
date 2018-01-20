@@ -2,13 +2,15 @@
 #include "renderEngine/objloader.h"
 #include "SFML/Window.hpp"
 #include "world/chunk.h"
+#include "world/world.h"
 
 const std::string Player::OBJECT_NAME = "objects/steve.obj";
 const std::string Player::TEXTURE_NAME = "textures/skin.png";
 const float Player::ACCEL = -9.81;
 
-Player::Player(glm::vec3 position, Loader *loader) : Entity()
+Player::Player(glm::vec3 position, Loader *loader, World *world) : Entity()
 {
+    m_world = world;
     m_rawModel = OBJLoader::loadObjModel(OBJECT_NAME, loader);
     m_texture = new ModelTexture(loader->loadTexture(TEXTURE_NAME));
     m_texture->setShineDamper(20);
@@ -18,7 +20,7 @@ Player::Player(glm::vec3 position, Loader *loader) : Entity()
     m_rotX = 0;
     m_rotY = 0;
     m_rotZ = 0;
-    m_scale = 1;
+    m_scale = 0.25;
 }
 
 Player::~Player()
@@ -30,7 +32,6 @@ Player::~Player()
 
 void Player::move()
 {
-    float ground = 16*Chunk::BLOCK_SIZE;
     float speed = 1;
     glm::mat4 mat(1.0);
     mat = glm::rotate   (mat, m_rotY, glm::vec3(0, 1, 0));
@@ -78,9 +79,10 @@ void Player::move()
     {
         m_speedY = 0.3;
     }
-    float step = 0.002;
-    m_speedY += ACCEL*step;
-    m_position.y += m_speedY;
-    if(m_position.y < ground)
-        m_position.y = ground;
+    m_position.y = m_world->height(m_position.x, m_position.z);
+    //float step = 0.002;
+    //m_speedY += ACCEL*step;
+    //m_position.y += m_speedY;
+    //if(m_position.y < ground)
+    //    m_position.y = ground;
 }

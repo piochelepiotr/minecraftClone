@@ -4,7 +4,6 @@
 #include "models/rawModel.h"
 #include <vector>
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
 #include <string>
 
 #ifndef BUFFER_OFFSET
@@ -18,6 +17,7 @@ class Loader
         ~Loader();
         RawModel *loadToVao(float *positions, int size_position, float *textCoor, int sizeTextCoor,
                             int *indices, int size_indices, float *normals, int size_normals);
+        RawModel *loadToVao(float *positions, int size_position);
         GLuint loadTexture(std::string const& fileName);
     private:
         GLuint createVao();

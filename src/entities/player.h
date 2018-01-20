@@ -5,10 +5,12 @@
 #include "entities/Entity.h"
 #include "renderEngine/loader.h"
 
+class World;
+
 class Player : public Entity
 {
 public:
-    Player(glm::vec3 position, Loader *loader);
+    Player(glm::vec3 position, Loader *loader, World *world);
     ~Player();
     void move();
 private:
@@ -19,6 +21,7 @@ private:
     bool m_inTheAir;
     float m_speedY;
     static const float ACCEL;
+    World *m_world;
 };
 
 #endif // PLAYER_H

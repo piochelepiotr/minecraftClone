@@ -10,6 +10,7 @@ class TexturedModel
         TexturedModel(RawModel *model, ModelTexture *texure);
         ModelTexture *getTexture() const { return m_texture; }
         RawModel *getModel() const { return m_model; }
+        void setModel(RawModel *model);
 
 private:
         RawModel *m_model;

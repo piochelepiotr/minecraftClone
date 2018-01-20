@@ -1,8 +1,8 @@
 Makefile
-shaders/shaderChunk.frag
-shaders/shaderChunk.vert
 shaders/shaderEntity.frag
 shaders/shaderEntity.vert
+shaders/shaderGui.frag
+shaders/shaderGui.vert
 shaders/shaderTerrain.frag
 shaders/shaderTerrain.vert
 src/entities/Entity.cpp
@@ -13,6 +13,10 @@ src/entities/light.cpp
 src/entities/light.h
 src/entities/player.cpp
 src/entities/player.h
+src/guis/guirenderer.cpp
+src/guis/guirenderer.h
+src/guis/guitexture.cpp
+src/guis/guitexture.h
 src/mainLoop.cpp
 src/models/rawModel.cpp
 src/models/rawModel.h
@@ -30,6 +34,8 @@ src/renderEngine/renderer.cpp
 src/renderEngine/renderer.h
 src/renderEngine/terrainrenderer.cpp
 src/renderEngine/terrainrenderer.h
+src/shaders/guishader.cpp
+src/shaders/guishader.h
 src/shaders/shaderProgram.cpp
 src/shaders/shaderProgram.h
 src/shaders/staticShader.cpp
@@ -44,6 +50,8 @@ src/toolbox/hash.cpp
 src/toolbox/hash.h
 src/toolbox/maths.cpp
 src/toolbox/maths.h
+src/toolbox/mousepicker.cpp
+src/toolbox/mousepicker.h
 src/toolbox/perlinnoise.cpp
 src/toolbox/perlinnoise.h
 src/toolbox/vertex.cpp

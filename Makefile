@@ -10,11 +10,13 @@ OBJS=src/renderEngine/displayManager.o \
 	 src/renderEngine/renderer.o \
 	 src/shaders/shaderProgram.o \
 	 src/shaders/staticShader.o \
-	 src/textures/modelTexture.o \
+         src/shaders/guishader.o \
+         src/textures/modelTexture.o \
 	 src/models/texturedModel.o \
 	 src/toolbox/maths.o \
          src/toolbox/vertex.o \
          src/toolbox/perlinnoise.o \
+         src/toolbox/mousepicker.o \
          src/toolbox/hash.o \
          src/entities/Entity.o \
          src/entities/camera.o \
@@ -27,7 +29,9 @@ OBJS=src/renderEngine/displayManager.o \
          src/world/world.o \
          src/world/chunk.o \
          src/world/block.o \
-         src/terrain/terrain.o
+         src/terrain/terrain.o \
+         src/guis/guirenderer.o \
+         src/guis/guitexture.o
 
 all: $(TARGET)
 
