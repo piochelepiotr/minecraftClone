@@ -1,26 +1,27 @@
 #include "world.h"
 #include "renderEngine/objloader.h"
 #include <iostream>
+#include "entities/player.h"
 
-const std::string World::OBJECT_NAME = "objects/cube.obj";
 const std::string World::TEXTURE_NAME = "textures/textures.png";
 const int World::DELETE_CHUNK_DISTANCE = 100;
 const int World::DISPLAY_CHUNK_DISTANCE = 100;
-const int World::LOAD_SIZE = 2;
+const int World::LOAD_SIZE = 5;
 
 World::World(Loader *loader) :
     m_loader(loader)
 {
-    int size = 1;
     m_texture = new ModelTexture(loader->loadTexture(TEXTURE_NAME));
     m_texture->setNumberRows(2);
+    int size = 0;
     for(int x = 0; x < size; x++)
     {
-        for(int y = 0; y < WORLD_HEIGHT; y++)
+        for(int y = 0; y < Chunk::WORLD_HEIGHT; y++)
         {
             for(int z = 0; z < size; z++)
             {
-                m_chunks[P(x,y,z)] = new Chunk(x*CHUNK_SIZE, y*CHUNK_SIZE, z*CHUNK_SIZE, m_texture, loader);
+                Chunk *chunk = new Chunk(x*CHUNK_SIZE, y*CHUNK_SIZE, z*CHUNK_SIZE, m_texture, loader);
+                m_chunks[P(x,y,z)] = chunk;
             }
         }
     }
@@ -53,7 +54,7 @@ float World::height(float x, float z) const
     int chunkZ = (int) floor(z / CHUNK_SIZE);
     int X = ix % CHUNK_SIZE;
     int Z = iz % CHUNK_SIZE;
-    for(int chunkY = WORLD_HEIGHT-1; chunkY >= 0; chunkY--)
+    for(int chunkY = Chunk::WORLD_HEIGHT-1; chunkY >= 0; chunkY--)
     {
         P p(chunkX, chunkY, chunkZ);
         if(chunkLoaded(p))
@@ -66,7 +67,9 @@ float World::height(float x, float z) const
             }
         }
         else
+        {
             return 40;
+        }
     }
     return 0;
 }
@@ -119,13 +122,14 @@ void World::loadChunk(P const& p)
     if(!chunkLoaded(p))
     {
         std::cout << "loading..." << std::endl;
-        //m_chunks[p] = new Chunk(p.x*CHUNK_SIZE, p.y*CHUNK_SIZE, p.z*CHUNK_SIZE, m_texture, m_loader);
+        m_chunks[p] = new Chunk(p.x*CHUNK_SIZE, p.y*CHUNK_SIZE, p.z*CHUNK_SIZE, m_texture, m_loader);
         std::cout << "loaded" << std::endl;
     }
 }
 
 void World::loadChunks(Player *player)
 {
+
     //every second, check what chunks should be deleted, delete them,
     glm::vec3 pos = player->getposition();
     int chunkX = (int) floor((double) pos.x / CHUNK_SIZE);
@@ -142,7 +146,7 @@ void World::loadChunks(Player *player)
     //then check the chunks to load, loads them
     for(int x = chunkX - LOAD_SIZE; x < chunkX + LOAD_SIZE; x++)
     {
-        for(int y = 0; y < WORLD_HEIGHT; y++)
+        for(int y = 0; y < Chunk::WORLD_HEIGHT; y++)
         {
             for(int z = chunkZ - LOAD_SIZE; z < chunkZ + LOAD_SIZE; z++)
             {

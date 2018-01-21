@@ -1,4 +1,5 @@
 #include "masterrenderer.h"
+#include <iostream>
 
 const float MasterRenderer::m_fov = 50;
 const float MasterRenderer::m_farPlane = 1000;

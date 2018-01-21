@@ -42,6 +42,12 @@ P operator*(P const p, double t)
     return P(p.x * t, p.y * t, p.z * t);
 }
 
+std::ostream& operator <<( std::ostream & flux, P const& p)
+{
+    flux << "[" << p.x << ";" << p.z << ";" << p.z << "]";
+    return flux;
+}
+
 double distance(double x1, double y1, double z1, double x2, double y2, double z2)
 {
     return sqrt(pow(x1-x2,2) + pow(y1 - y2, 2) + pow(z1 - z2, 2));

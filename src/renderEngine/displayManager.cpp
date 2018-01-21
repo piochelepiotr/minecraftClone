@@ -125,7 +125,7 @@ void DisplayManager::mainLoop()
         player.move(getCurrentTime());
         camera.lockOnPlayer(&player);
 
-        //masterRenderer.processEntity(&player);
+        masterRenderer.processEntity(&player);
         masterRenderer.processEntities(world.getChunks());
         masterRenderer.processGui(&gui);
         masterRenderer.render(camera);

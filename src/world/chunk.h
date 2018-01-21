@@ -9,18 +9,18 @@
 #include <glm/glm.hpp>
 #define CHUNK_SIZE 16
 #define BIOME_SIZE 32
-#define WORLD_HEIGHT 1
 
 
 class Chunk : public Entity
 {
 public:
     Chunk(int startX, int startY, int startZ, ModelTexture * texture, Loader *loader);
-    ~Chunk();
+    virtual ~Chunk();
     RawModel *getModel() const { return m_rawModel; }
     float height(float x, float z) const;
     Block::ID block(int x, int y, int z) const { return m_blocks[x][y][z]; }
     void setBlock(int x, int y, int z, Block::ID b);
+    static const int WORLD_HEIGHT;
 private:
     static void addFace(std::vector<glm::vec3> & vertices, std::vector<glm::vec2> & textures,
                         std::vector<glm::vec3> & normals, std::vector<int> & indexes,

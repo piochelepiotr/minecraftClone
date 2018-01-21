@@ -11,14 +11,15 @@ const std::string Player::OBJECT_NAME = "objects/steve.obj";
 const std::string Player::TEXTURE_NAME = "textures/skin.png";
 const float Player::ACCEL = -9.81;
 const long Player::DELAY_RUN = 200;
-const long Player::DELAY_REFRESH_WORLD = 100000;
+const long Player::DELAY_REFRESH_WORLD = 1000;
 
 Player::Player(glm::vec3 position, Loader *loader, World *world, MousePicker *mousePicker) : Entity(),
     m_mousePicker(mousePicker),
     m_walkSpeed(5),
     m_runSpeed(15),
     m_ForwardPressed(false),
-    m_fly(false)
+    m_fly(true),
+    m_lastTimeWorldRefreshed(0)
 {
     m_timeLastUpdate = -1;
     m_inAir = true;
@@ -44,11 +45,11 @@ Player::~Player()
 
 void Player::move(long currentTime)
 {
-    /*if(currentTime - m_lastTimeWorldRefreshed > DELAY_REFRESH_WORLD)
+    if(currentTime - m_lastTimeWorldRefreshed > DELAY_REFRESH_WORLD)
     {
         m_lastTimeWorldRefreshed = currentTime;
-        //m_world->loadChunks(this);
-    }*/
+        m_world->loadChunks(this);
+    }
     double delta = (double) (currentTime - m_timeLastUpdate) / 1000.0;
     glm::mat4 mat(1.0);
     mat = glm::rotate   (mat, m_rotY, glm::vec3(0, 1, 0));
@@ -116,6 +117,7 @@ void Player::move(long currentTime)
             if(currentTime - m_lastSpacePressed < DELAY_RUN)
             {
                 m_fly = !m_fly;
+                m_speedY = 0;
             }
         }
         if(!m_fly)
@@ -177,6 +179,7 @@ void Player::fall(double delta, glm::mat4 const& rot)
     double g5 = m_world->height(m_position.x + shiftBBM.x, m_position.z + shiftBBM.y);
     double g6 = m_world->height(m_position.x + shiftBBL.x, m_position.z + shiftBBL.y);
     double ground = std::max(std::max(g1, g2), std::max(std::max(g3,g4), std::max(g5, g6)));
+    std::cout << "ground = " << ground << std::endl;
 
     if(ground < m_position.y)
     {

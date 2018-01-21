@@ -5,6 +5,7 @@
 using namespace std;
 
 const int Chunk::m_numberRowsTextures = 2;
+const int Chunk::WORLD_HEIGHT = 5;
 
 Chunk::Chunk(int startX, int startY, int startZ, ModelTexture *texture, Loader *loader) : Entity()
 {
@@ -33,6 +34,7 @@ Chunk::Chunk(int startX, int startY, int startZ, ModelTexture *texture, Loader *
     buildFaces(loader);
     m_model = new TexturedModel(m_rawModel, texture);
 }
+
 
 Chunk::~Chunk()
 {

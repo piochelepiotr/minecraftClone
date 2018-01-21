@@ -38,7 +38,7 @@ private:
     bool m_fly;
     bool m_spacePressed;
     long m_lastSpacePressed;
-    //long m_lastTimeWorldRefreshed;
+    long m_lastTimeWorldRefreshed;
 };
 
 #endif // PLAYER_H
