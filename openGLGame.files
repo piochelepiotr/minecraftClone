@@ -52,6 +52,8 @@ src/toolbox/maths.cpp
 src/toolbox/maths.h
 src/toolbox/mousepicker.cpp
 src/toolbox/mousepicker.h
+src/toolbox/p.cpp
+src/toolbox/p.h
 src/toolbox/perlinnoise.cpp
 src/toolbox/perlinnoise.h
 src/toolbox/vertex.cpp

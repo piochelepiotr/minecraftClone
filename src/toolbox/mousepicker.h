@@ -4,7 +4,7 @@
 #include <glm/glm.hpp>
 #include "entities/camera.h"
 #include "world/world.h"
-#define MAX_DISTANCE_BLOCK 10
+#define MAX_DISTANCE_BLOCK 30
 
 class MousePicker
 {
@@ -14,9 +14,10 @@ public:
     void update();
     void updateWindowSize(double windowX, double windowY);
     bool getAimedBlock(int & x, int & y, int & z);
+    double placeInFront(double x_s, double y_s, double z_s, glm::vec3 const& dir);
 
 private:
-    void getNextBlock(double & x_i, double & y_i, double & z_i, glm::vec3 const& dir,
+    double getNextBlock(double & x_i, double & y_i, double & z_i, glm::vec3 const& dir,
                   int & x, int & y, int & z);
     glm::vec4 toEyeCoord(glm::vec4 const& clipCoord);
     void createViewMatrix();

@@ -28,18 +28,16 @@ MasterRenderer::~MasterRenderer()
     delete m_guiRenderer;
 }
 
-void MasterRenderer::render(Light const& sun, Camera const& camera)
+void MasterRenderer::render(Camera const& camera)
 {
     prepare();
     m_entityShader->start();
     m_entityShader->loadSkyColour(m_skyColour);
-    m_entityShader->loadLight(sun);
     m_entityShader->loadViewMatrix(camera);
     m_entityRenderer->render(m_entities);
     m_entityShader->stop();
     m_entities.clear();
     m_terrainShader->start();
-    m_terrainShader->loadLight(sun);
     m_terrainShader->loadSkyColour(m_skyColour);
     m_terrainShader->loadViewMatrix(camera);
     m_terrainRenderer->render(m_terrains);

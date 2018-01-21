@@ -89,7 +89,7 @@ def randg2():
 
 def main():
     c = 6
-    sizeOne = 60
+    sizeOne = 16
     s = sizeOne*c
     g = [[randg() for x in range(c+1)] for i in range(c+1)]
     img = Image.new('RGB', (s, s), "black")

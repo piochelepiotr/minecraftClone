@@ -13,6 +13,7 @@
 #include "world/world.h"
 #include "guis/guitexture.h"
 #include "toolbox/mousepicker.h"
+#include <chrono>
 
 using namespace glm;
 using namespace std;
@@ -52,14 +53,13 @@ bool DisplayManager::createDisplay()
 
 void DisplayManager::mainLoop()
 {
+    m_window->setMouseCursorVisible(false);
     World world(&m_loader);
     Camera camera(vec3(0,8,10));
-    Light light(vec3(0,5000,3000), vec3(1,1,1));
-    Player player(vec3(0,17,0), &m_loader, &world);
     MasterRenderer masterRenderer(m_width, m_height, &m_loader);
-    m_window->setMouseCursorVisible(false);
-    GuiTexture gui(m_loader.loadTexture("textures/cursor.png"), glm::vec2(0.02, 0.03), glm::vec2(0,0));
     MousePicker mousePicker(&camera, &world, masterRenderer.projectionMatrix(), m_width, m_height);
+    Player player(vec3(10,50,10), &m_loader, &world, &mousePicker);
+    GuiTexture gui(m_loader.loadTexture("textures/cursor.png"), glm::vec2(0.02, 0.03), glm::vec2(0,0));
 
     bool running = true;
     sf::Vector2i center(m_window->getSize().x/2, m_window->getSize().y/2);
@@ -92,7 +92,7 @@ void DisplayManager::mainLoop()
                 {
                     if(!firstMouseMove)
                     {
-                        float pitch = moveY;
+                       float pitch = moveY;
                         pitch /= 100;
                         float roY = moveX;
                         roY /= 200;
@@ -105,15 +105,16 @@ void DisplayManager::mainLoop()
             }
             else if(event.type == sf::Event::MouseButtonPressed)
             {
+                //mousePicker.update();
+                //glm::vec3 mouseRay = mousePicker.currentRay();
+                //std::cout << "mouse Ray : " << mouseRay.x << ";" << mouseRay.y << ";" << mouseRay.z << std::endl;
                 int x,y,z;
                 if(mousePicker.getAimedBlock(x, y, z))
                 {
-                    std::cout << "got it !!" << std::endl;
                     world.setBlock(x, y, z, Block::AIR);
                 }
                 else
                 {
-                    std::cout << "sorry, not today" << std::endl;
                 }
             }
         }
@@ -121,13 +122,13 @@ void DisplayManager::mainLoop()
         //glm::vec3 mouseRay = mousePicker.currentRay();
         //std::cout << "mouse Ray : " << mouseRay.x << ";" << mouseRay.y << ";" << mouseRay.z << std::endl;
 
-        player.move();
+        player.move(getCurrentTime());
         camera.lockOnPlayer(&player);
 
-        masterRenderer.processEntity(&player);
+        //masterRenderer.processEntity(&player);
         masterRenderer.processEntities(world.getChunks());
         masterRenderer.processGui(&gui);
-        masterRenderer.render(light, camera);
+        masterRenderer.render(camera);
         m_window->display();
     }
 }
@@ -135,4 +136,10 @@ void DisplayManager::mainLoop()
 DisplayManager::~DisplayManager()
 {
     delete m_window;
+}
+
+long DisplayManager::getCurrentTime()
+{
+    long t = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+    return t;
 }

@@ -14,6 +14,7 @@ OBJS=src/renderEngine/displayManager.o \
          src/textures/modelTexture.o \
 	 src/models/texturedModel.o \
 	 src/toolbox/maths.o \
+         src/toolbox/p.o \
          src/toolbox/vertex.o \
          src/toolbox/perlinnoise.o \
          src/toolbox/mousepicker.o \

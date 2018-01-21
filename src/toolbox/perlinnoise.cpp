@@ -4,7 +4,7 @@
 
 using namespace glm;
 
-Hash PerlinNoise::m_hash = Hash(93730);
+Hash PerlinNoise::m_hash = Hash(9330);
 
 PerlinNoise::PerlinNoise()
 {
@@ -23,8 +23,8 @@ float PerlinNoise::lerp(float t, float a, float b)
 
 float PerlinNoise::noise(float x, float y)
 {
-    int X = int(x);
-    int Y = int(y);
+    int X = floor(x);
+    int Y = floor(y);
     x = x - X;
     y = y - Y;
     x = fade(x);

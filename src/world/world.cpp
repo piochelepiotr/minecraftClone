@@ -4,34 +4,26 @@
 
 const std::string World::OBJECT_NAME = "objects/cube.obj";
 const std::string World::TEXTURE_NAME = "textures/textures.png";
+const int World::DELETE_CHUNK_DISTANCE = 100;
+const int World::DISPLAY_CHUNK_DISTANCE = 100;
+const int World::LOAD_SIZE = 2;
 
-World::World(Loader *loader)
+World::World(Loader *loader) :
+    m_loader(loader)
 {
+    int size = 1;
     m_texture = new ModelTexture(loader->loadTexture(TEXTURE_NAME));
     m_texture->setNumberRows(2);
-    for(int x = 0; x < 10; x++)
+    for(int x = 0; x < size; x++)
     {
-        for(int z = 0; z < 10; z++)
+        for(int y = 0; y < WORLD_HEIGHT; y++)
         {
-            m_chunks[std::make_pair(x,z)] =new Chunk(x*CHUNK_SIZE, z*CHUNK_SIZE, m_texture, loader);
-            glm::vec3 pos = m_chunks[std::make_pair(x,z)]->getposition();
-            std::cout << "translation : " << pos.x << " " << pos.y << " " << pos.z << std::endl;
-        }
-    }
-    /*int worldSize = 8;
-    float size = 2;
-    for(int i = -worldSize; i < worldSize; i++)
-    {
-        for(int j = -worldSize; j < worldSize; j++)
-        {
-            //float height = rand() % 5 + 1;
-            int height = 16;
-            for(int z = 1; z <= height; z++)
+            for(int z = 0; z < size; z++)
             {
-                m_blocks.push_back(new Entity(glm::vec3((float) i*size,(z - 2)*size,(float) j*size), m_texturedModel, 0, 0, 0, size, 1));
+                m_chunks[P(x,y,z)] = new Chunk(x*CHUNK_SIZE, y*CHUNK_SIZE, z*CHUNK_SIZE, m_texture, loader);
             }
         }
-    }*/
+    }
 }
 
 World::~World()
@@ -61,15 +53,22 @@ float World::height(float x, float z) const
     int chunkZ = (int) floor(z / CHUNK_SIZE);
     int X = ix % CHUNK_SIZE;
     int Z = iz % CHUNK_SIZE;
-    std::pair<int,int> p(chunkX, chunkZ);
-    if(m_chunks.find(p) != m_chunks.end())
+    for(int chunkY = WORLD_HEIGHT-1; chunkY >= 0; chunkY--)
     {
-        Chunk *chunk = m_chunks.at(p);
-        float h = chunk->height(X,Z);
-        return h;
+        P p(chunkX, chunkY, chunkZ);
+        if(chunkLoaded(p))
+        {
+            Chunk *chunk = m_chunks.at(p);
+            float h = chunk->height(X,Z);
+            if(h > 0)
+            {
+                return h + chunkY*CHUNK_SIZE;
+            }
+        }
+        else
+            return 40;
     }
-    else
-        return 40;
+    return 0;
 }
 
 Block::ID World::block(int x, int y, int z) const
@@ -80,8 +79,8 @@ Block::ID World::block(int x, int y, int z) const
     int X = x % CHUNK_SIZE;
     int Y = y % CHUNK_SIZE;
     int Z = z % CHUNK_SIZE;
-    std::pair<int,int> p(chunkX, chunkZ);
-    if(m_chunks.find(p) != m_chunks.end() && chunkY == 0)
+    P p(chunkX, chunkY, chunkZ);
+    if(chunkLoaded(p))
     {
         Chunk *chunk = m_chunks.at(p);
         return chunk->block(X,Y,Z);
@@ -98,8 +97,8 @@ void World::setBlock(int x, int y, int z, Block::ID b)
     int X = x % CHUNK_SIZE;
     int Y = y % CHUNK_SIZE;
     int Z = z % CHUNK_SIZE;
-    std::pair<int,int> p(chunkX, chunkZ);
-    if(m_chunks.find(p) != m_chunks.end() && chunkY == 0)
+    P p(chunkX, chunkY, chunkZ);
+    if(chunkLoaded(p))
     {
         Chunk *chunk = m_chunks.at(p);
         chunk->setBlock(X,Y,Z,b);
@@ -107,5 +106,49 @@ void World::setBlock(int x, int y, int z, Block::ID b)
     else
     {
         std::cout << "ERROR, IMPOSSIBLE TO SET BLOCK" << std::endl;
+    }
+}
+
+bool World::chunkLoaded(P const& p) const
+{
+    return m_chunks.find(p) != m_chunks.end();
+}
+
+void World::loadChunk(P const& p)
+{
+    if(!chunkLoaded(p))
+    {
+        std::cout << "loading..." << std::endl;
+        //m_chunks[p] = new Chunk(p.x*CHUNK_SIZE, p.y*CHUNK_SIZE, p.z*CHUNK_SIZE, m_texture, m_loader);
+        std::cout << "loaded" << std::endl;
+    }
+}
+
+void World::loadChunks(Player *player)
+{
+    //every second, check what chunks should be deleted, delete them,
+    glm::vec3 pos = player->getposition();
+    int chunkX = (int) floor((double) pos.x / CHUNK_SIZE);
+    //int chunkY = (int) floor((double) pos.y / CHUNK_SIZE);
+    int chunkZ = (int) floor((double) pos.z / CHUNK_SIZE);
+    for(auto & chunk : m_chunks)
+    {
+        float d = distance(chunk.first*CHUNK_SIZE + CHUNK_SIZE/2, pos);
+        if(d > DELETE_CHUNK_DISTANCE)
+        {
+
+        }
+    }
+    //then check the chunks to load, loads them
+    for(int x = chunkX - LOAD_SIZE; x < chunkX + LOAD_SIZE; x++)
+    {
+        for(int y = 0; y < WORLD_HEIGHT; y++)
+        {
+            for(int z = chunkZ - LOAD_SIZE; z < chunkZ + LOAD_SIZE; z++)
+            {
+                std::cout << "load chunk "<< x << ";" << y << ";" << z << std::endl;
+                loadChunk(P(x,y,z));
+            }
+        }
     }
 }

@@ -6,25 +6,25 @@ using namespace std;
 
 const int Chunk::m_numberRowsTextures = 2;
 
-Chunk::Chunk(int startX, int startZ, ModelTexture *texture, Loader *loader) : Entity()
+Chunk::Chunk(int startX, int startY, int startZ, ModelTexture *texture, Loader *loader) : Entity()
 {
-    m_position = glm::vec3(startX, 0, startZ);
+    m_position = glm::vec3(startX, startY, startZ);
     m_loader = loader;
-    std::cout << startX << " " << startZ << std::endl;
     for(int x = 0; x < CHUNK_SIZE; x++)
     {
         for(int z = 0; z < CHUNK_SIZE; z++)
         {
-            int height = (int) (PerlinNoise::noise((float) (x+startX) / BIOME_SIZE, (float) (z+startZ) / BIOME_SIZE)*CHUNK_SIZE);
-            for(int y = 0; y < height-1; y++)
+            int height = (int) (PerlinNoise::noise((float) (x+startX) / BIOME_SIZE, (float) (z+startZ) / BIOME_SIZE)*WORLD_HEIGHT*CHUNK_SIZE);
+            height -= startY;
+            for(int y = 0; y < std::min(height, CHUNK_SIZE); y++)
             {
                 m_blocks[x][y][z] = Block::DIRT;
             }
-            if(height > 0)
+            /*if(height > 0)
             {
                 m_blocks[x][height-1][z] = Block::GRASS;
-            }
-            for(int y = height; y < CHUNK_SIZE; y++)
+            }*/
+            for(int y = std::max(0,height); y < CHUNK_SIZE; y++)
             {
                 m_blocks[x][y][z] = Block::AIR;
             }
@@ -218,7 +218,6 @@ void Chunk::buildRawModel(Loader *loader, std::vector<glm::vec3> &vertices, std:
     }
     m_rawModel = loader->loadToVao(verticesArray, size*3, texturesArray, size*2 ,indexesArray, ind_size, normalsArray, size*3);
 }
-
 
 float Chunk::height(float x, float z) const
 {

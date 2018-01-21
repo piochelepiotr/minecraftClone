@@ -6,8 +6,8 @@ Camera::Camera(const glm::vec3 &position) :
     m_pitch(0.0),
     m_yaw(0),
     m_roll(0),
-    m_followDistance(-1),
-    m_cameraHeight(2)
+    m_followDistance(-0.5),
+    m_cameraHeight(1.8)
 {
 
 }

@@ -22,6 +22,7 @@ class DisplayManager
         void mainLoop();
 
     private:
+        long getCurrentTime();
         int m_width;
         int m_height;
         std::string m_title;

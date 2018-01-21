@@ -17,7 +17,7 @@ class MasterRenderer
 public:
     MasterRenderer(int width, int height, Loader *loader);
     ~MasterRenderer();
-    void render(Light const& sun, Camera const& camera);
+    void render(Camera const& camera);
     void processEntity(Entity *entity);
     void processEntities(std::vector<Entity *> const& entities);
     void processTerrain(Terrain *terrain);
