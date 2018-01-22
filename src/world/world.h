@@ -25,8 +25,8 @@ private:
     std::map<P, Chunk *>m_chunks;
     ModelTexture *m_texture;
     const static std::string TEXTURE_NAME;
-    const static int DELETE_CHUNK_DISTANCE;
-    const static int DISPLAY_CHUNK_DISTANCE;
+    const static double DELETE_CHUNK_DISTANCE;
+    const static double DISPLAY_CHUNK_DISTANCE;
     const static int LOAD_SIZE;
     Loader *m_loader;
 };

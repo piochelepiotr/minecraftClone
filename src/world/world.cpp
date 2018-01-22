@@ -4,9 +4,9 @@
 #include "entities/player.h"
 
 const std::string World::TEXTURE_NAME = "textures/textures.png";
-const int World::DELETE_CHUNK_DISTANCE = 100;
-const int World::DISPLAY_CHUNK_DISTANCE = 100;
-const int World::LOAD_SIZE = 5;
+const double World::DELETE_CHUNK_DISTANCE = 140;
+const double World::DISPLAY_CHUNK_DISTANCE = 100;
+const int World::LOAD_SIZE = 10;
 
 World::World(Loader *loader) :
     m_loader(loader)
@@ -135,23 +135,27 @@ void World::loadChunks(Player *player)
     int chunkX = (int) floor((double) pos.x / CHUNK_SIZE);
     //int chunkY = (int) floor((double) pos.y / CHUNK_SIZE);
     int chunkZ = (int) floor((double) pos.z / CHUNK_SIZE);
-    for(auto & chunk : m_chunks)
+    for(std::map<P, Chunk*>::iterator it = m_chunks.begin(); it != m_chunks.end(); it++)
     {
-        float d = distance(chunk.first*CHUNK_SIZE + CHUNK_SIZE/2, pos);
+        float d = distance(it->first*CHUNK_SIZE + CHUNK_SIZE/2, pos);
         if(d > DELETE_CHUNK_DISTANCE)
         {
-
+            delete it->second;
+            m_chunks.erase(it);
         }
     }
     //then check the chunks to load, loads them
-    for(int x = chunkX - LOAD_SIZE; x < chunkX + LOAD_SIZE; x++)
+    for(int x = chunkX - LOAD_SIZE; x <= chunkX + LOAD_SIZE; x++)
     {
         for(int y = 0; y < Chunk::WORLD_HEIGHT; y++)
         {
-            for(int z = chunkZ - LOAD_SIZE; z < chunkZ + LOAD_SIZE; z++)
+            for(int z = chunkZ - LOAD_SIZE; z <= chunkZ + LOAD_SIZE; z++)
             {
                 std::cout << "load chunk "<< x << ";" << y << ";" << z << std::endl;
-                loadChunk(P(x,y,z));
+                if(distance(P(x,y,z)*CHUNK_SIZE+CHUNK_SIZE/2, pos) <= DISPLAY_CHUNK_DISTANCE)
+                {
+                    loadChunk(P(x,y,z));
+                }
             }
         }
     }
