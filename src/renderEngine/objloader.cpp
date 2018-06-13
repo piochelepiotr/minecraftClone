@@ -11,9 +11,9 @@ OBJLoader::OBJLoader()
 }
 
 
-vector<map<pair<int,int>,int>> OBJLoader::splitEdges(const std::vector<Vertex> &vertexes, int & max_index, int max_ver)
+vector<map<pair<int,int>,int> > OBJLoader::splitEdges(const std::vector<Vertex> &vertexes, int & max_index, int max_ver)
 {
-    vector<map<pair<int,int>, int>> unique_vertexes;
+    vector<map<pair<int,int>, int> > unique_vertexes;
     for(int i = 0; i < max_ver + 1; i++)
     {
         map<pair<int, int>, int> v;
@@ -105,7 +105,7 @@ RawModel * OBJLoader::loadObjModel(string const& fileName, Loader *loader)
     }
     file.close();
     int max_index = 0;
-    vector<map<pair<int,int>,int>> unique_vertexes = splitEdges(vertexes, max_index, max_ver);
+    vector<map<pair<int,int>,int> > unique_vertexes = splitEdges(vertexes, max_index, max_ver);
     int size_indexes = vertexes.size();
     int size = max_index;
     verticesArray = new float[max_index*3];

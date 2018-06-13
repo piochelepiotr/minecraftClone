@@ -1,7 +1,7 @@
 TARGET=main
 LDLIBS=-lsfml-graphics -lsfml-window -lsfml-system -lglut -lGL -lGLU -lGLEW -lglfw
 INCLUDE_PATH=src
-CPPFLAGS=-Wall -Wextra -I $(INCLUDE_PATH)
+CPPFLAGS=-Wall -Wextra -I $(INCLUDE_PATH) -std=c++14 -DGLM_ENABLE_EXPERIMENTAL
 
 OBJS=src/renderEngine/displayManager.o \
 	 src/mainLoop.o \

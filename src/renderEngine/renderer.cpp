@@ -51,7 +51,7 @@ void EntityRenderer::prepareEntity(Entity *entity)
     m_shader->loadTextureOffset(entity->getTextureXOffset(), entity->getTextureYOffset());
 }
 
-void EntityRenderer::render(std::map<TexturedModel*, std::vector<Entity*>> const& entities)
+void EntityRenderer::render(std::map<TexturedModel*, std::vector<Entity*> > const& entities)
 {
     for(auto & v : entities)
     {

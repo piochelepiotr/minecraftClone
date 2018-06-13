@@ -38,7 +38,7 @@ private:
     EntityRenderer *m_entityRenderer;
     TerrainRenderer *m_terrainRenderer;
     GuiRenderer *m_guiRenderer;
-    std::map<TexturedModel*, std::vector<Entity*>> m_entities;
+    std::map<TexturedModel*, std::vector<Entity*> > m_entities;
     std::vector<Terrain*> m_terrains;
     std::vector<GuiTexture*>m_guis;
 };

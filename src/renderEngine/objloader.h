@@ -18,7 +18,7 @@ public:
     OBJLoader();
     static RawModel *loadObjModel(std::string const& fileName, Loader *loader);
 private:
-    static std::vector<std::map<std::pair<int,int>,int>> splitEdges(std::vector<Vertex> const& vertexes, int & max_index, int max_ver);
+    static std::vector<std::map<std::pair<int,int>,int> > splitEdges(std::vector<Vertex> const& vertexes, int & max_index, int max_ver);
     static void assignIndexes(std::vector<std::map<std::pair<int, int>, int> > &unique_vertexes, int & max_index);
     static void processVertex(std::string const& vertex, std::vector<int> & indices,
                        std::vector<glm::vec2> & textures, std::vector<glm::vec3> & normals,
