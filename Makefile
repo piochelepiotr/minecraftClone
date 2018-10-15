@@ -1,7 +1,14 @@
+MACOS=1
 TARGET=main
-LDLIBS=-lsfml-graphics -lsfml-window -lsfml-system -lglut -lGL -lGLU -lGLEW -lglfw
+INCLUDE_PATHS =
+LIBRARY_PATHS =
+ifeq ($(MACOS),1)
+	INCLUDE_PATHS = -I/usr/local/include -I/opt/X11/include
+	LIBRARY_PATHS = -L/usr/local/lib -I/opt/X11/lib
+endif
+LDLIBS=-lsfml-graphics -lsfml-window -lsfml-system -framework OpenGL -lGLEW -lglfw
 INCLUDE_PATH=src
-CPPFLAGS=-Wall -Wextra -I $(INCLUDE_PATH) -std=c++14 -DGLM_ENABLE_EXPERIMENTAL
+CPPFLAGS=-Wall -Wextra -I $(INCLUDE_PATH) $(INCLUDE_PATHS) $(LIBRARY_PATHS) -std=c++11 -DGLM_ENABLE_EXPERIMENTAL
 
 OBJS=src/renderEngine/displayManager.o \
 	 src/mainLoop.o \

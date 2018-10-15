@@ -4,10 +4,9 @@
 
 Loader::Loader()
 {
-
 }
 
-RawModel * Loader::loadToVao(float *positions, int size_position, float *textCoor, int sizeTextCoor, int *indices, int size_indices, float *normals, int size_normals)
+RawModel *Loader::loadToVao(float *positions, int size_position, float *textCoor, int sizeTextCoor, int *indices, int size_indices, float *normals, int size_normals)
 {
     GLuint vaoID = createVao();
     bindIndicesBuffer(indices, size_indices);
@@ -23,10 +22,10 @@ RawModel *Loader::loadToVao(float *positions, int size_position)
     GLuint vaoID = createVao();
     storeDataInAttributeList(0, 2, positions, size_position);
     unbindVao();
-    return new RawModel(vaoID, size_position/2);
+    return new RawModel(vaoID, size_position / 2);
 }
 
-GLuint Loader::loadTexture(std::string const& fileName)
+GLuint Loader::loadTexture(std::string const &fileName)
 {
     GLuint id;
     sf::Image img_data;
@@ -65,17 +64,19 @@ GLuint Loader::createVao()
 void Loader::bindIndicesBuffer(int *indices, int size)
 {
     GLuint vboID;
-    glCreateBuffers(1, &vboID);
+    // glCreateBuffers(1, &vboID);
+    glGenBuffers(1, &vboID);
     m_vboIDs.push_back(vboID);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboID);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * size, 0, GL_STATIC_DRAW);
     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, sizeof(int) * size, indices);
 }
 
-void Loader::storeDataInAttributeList(int attribute,int coordSize, float *data, int size)
+void Loader::storeDataInAttributeList(int attribute, int coordSize, float *data, int size)
 {
     GLuint vboID;
-    glCreateBuffers(1, &vboID);
+    // glCreateBuffers(1, &vboID);
+    glGenBuffers(1, &vboID);
     m_vboIDs.push_back(vboID);
     glBindBuffer(GL_ARRAY_BUFFER, vboID);
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * size, 0, GL_STATIC_DRAW);
@@ -91,15 +92,15 @@ void Loader::unbindVao()
 
 Loader::~Loader()
 {
-    for(auto vaoID : m_vaoIDs)
+    for (auto vaoID : m_vaoIDs)
     {
         glDeleteVertexArrays(1, &vaoID);
     }
-    for(auto vboID : m_vboIDs)
+    for (auto vboID : m_vboIDs)
     {
         glDeleteBuffers(1, &vboID);
     }
-    for(auto textID : m_textIDs)
+    for (auto textID : m_textIDs)
     {
         glDeleteTextures(1, &textID);
     }

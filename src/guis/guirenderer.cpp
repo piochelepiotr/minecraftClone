@@ -1,14 +1,15 @@
 #include "guirenderer.h"
 #include "toolbox/maths.h"
+#include <iostream>
 
 GuiRenderer::GuiRenderer(Loader *loader)
 {
-    float positions [] = {-1,1, -1,-1,  1,1,  1,-1};
+    float positions[] = {-1, 1, -1, -1, 1, 1, 1, -1};
     m_model = loader->loadToVao(positions, 8);
     m_shader = new GuiShader();
 }
 
-void GuiRenderer::render(std::vector<GuiTexture *> const& guis)
+void GuiRenderer::render(std::vector<GuiTexture *> const &guis)
 {
     m_shader->start();
     glBindVertexArray(m_model->getVaoID());
@@ -17,7 +18,7 @@ void GuiRenderer::render(std::vector<GuiTexture *> const& guis)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDisable(GL_DEPTH_TEST);
     //rendering
-    for(auto & gui : guis)
+    for (auto &gui : guis)
     {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, gui->id());

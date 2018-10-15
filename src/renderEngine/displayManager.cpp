@@ -18,13 +18,12 @@
 using namespace glm;
 using namespace std;
 
-DisplayManager::DisplayManager(int width, int height, std::string title) :
-    m_width(width),
-    m_height(height),
-    m_title(title),
-    m_window(0)
+DisplayManager::DisplayManager(int width, int height, std::string title) : m_width(width),
+                                                                           m_height(height),
+                                                                           m_title(title),
+                                                                           m_window(0)
 {
-    m_projection = perspective(70.0, (double) m_width / m_height, 1.0, 100.0);
+    m_projection = perspective(70.0, (double)m_width / m_height, 1.0, 100.0);
     m_modelview = mat4(1.0);
 }
 
@@ -38,10 +37,10 @@ bool DisplayManager::createDisplay()
     settings.minorVersion = 5;
 
     m_window = new sf::Window(sf::VideoMode(m_width, m_height), "OpenGL", sf::Style::Default, settings);
-	m_window->setVerticalSyncEnabled(true);
+    m_window->setVerticalSyncEnabled(true);
     m_window->setActive(true);
-    glewExperimental=GL_TRUE;
-    if(glewInit() != GLEW_OK)
+    glewExperimental = GL_TRUE;
+    if (glewInit() != GLEW_OK)
     {
         std::cout << "error glew" << std::endl;
         return false;
@@ -50,19 +49,18 @@ bool DisplayManager::createDisplay()
     return true;
 }
 
-
 void DisplayManager::mainLoop()
 {
     m_window->setMouseCursorVisible(false);
     World world(&m_loader);
-    Camera camera(vec3(0,8,10));
+    Camera camera(vec3(0, 8, 10));
     MasterRenderer masterRenderer(m_width, m_height, &m_loader);
     MousePicker mousePicker(&camera, &world, masterRenderer.projectionMatrix(), m_width, m_height);
-    Player player(vec3(10,50,10), &m_loader, &world, &mousePicker);
-    GuiTexture gui(m_loader.loadTexture("textures/cursor.png"), glm::vec2(0.02, 0.03), glm::vec2(0,0));
+    Player player(vec3(10, 50, 10), &m_loader, &world, &mousePicker);
+    GuiTexture gui(m_loader.loadTexture("textures/cursor.png"), glm::vec2(0.02, 0.03), glm::vec2(0, 0));
 
     bool running = true;
-    sf::Vector2i center(m_window->getSize().x/2, m_window->getSize().y/2);
+    sf::Vector2i center(m_window->getSize().x / 2, m_window->getSize().y / 2);
     while (running)
     {
         // gestion des évènements
@@ -81,35 +79,35 @@ void DisplayManager::mainLoop()
                 m_width = event.size.width;
                 m_height = event.size.height;
                 glViewport(0, 0, event.size.width, event.size.height);
-                center = sf::Vector2i(m_window->getSize().x/2, m_window->getSize().y/2);
+                center = sf::Vector2i(m_window->getSize().x / 2, m_window->getSize().y / 2);
                 mousePicker.updateWindowSize(m_width, m_height);
             }
-            else if(event.type == sf::Event::MouseMoved)
+            else if (event.type == sf::Event::MouseMoved)
             {
                 int moveY = event.mouseMove.y - center.y;
                 int moveX = -(event.mouseMove.x - center.x);
-                if(moveX != 0 or moveY != 0)
+                if (moveX != 0 or moveY != 0)
                 {
-                    if(!firstMouseMove)
+                    if (!firstMouseMove)
                     {
-                       float pitch = moveY;
+                        float pitch = moveY;
                         pitch /= 100;
                         float roY = moveX;
                         roY /= 200;
                         camera.setPitch(camera.pitch() + pitch);
-                        player.setrotY(player.getrotY()+roY);
+                        player.setrotY(player.getrotY() + roY);
                     }
                     sf::Mouse::setPosition(center, *m_window);
                 }
                 firstMouseMove = false;
             }
-            else if(event.type == sf::Event::MouseButtonPressed)
+            else if (event.type == sf::Event::MouseButtonPressed)
             {
                 //mousePicker.update();
                 //glm::vec3 mouseRay = mousePicker.currentRay();
                 //std::cout << "mouse Ray : " << mouseRay.x << ";" << mouseRay.y << ";" << mouseRay.z << std::endl;
-                int x,y,z;
-                if(mousePicker.getAimedBlock(x, y, z))
+                int x, y, z;
+                if (mousePicker.getAimedBlock(x, y, z))
                 {
                     world.setBlock(x, y, z, Block::AIR);
                 }
