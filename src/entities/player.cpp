@@ -92,7 +92,7 @@ void Player::move(long currentTime)
         m_position.x += movement.x;
         m_position.z += movement.z;
     }
-    if(!sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
+    if(!sf::Keyboard::isKeyPressed(sf::Keyboard::W))
     {
         m_ForwardPressed = false;
     }
@@ -103,7 +103,7 @@ void Player::move(long currentTime)
         m_position.x += movement.x;
         m_position.z += movement.z;
     }
-    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
+    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
     {
         glm::vec3 forward(-speed, 0, 0);
         glm::vec3 movement = mat * glm::vec4(forward, 1);

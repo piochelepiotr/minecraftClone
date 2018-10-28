@@ -1,0 +1,3 @@
+let &path.="./textures,./pythonTests,./objects,./shaders,./src,./src/textures,./src/guis,./src/renderEngine,./src/world,./src/models,./src/game,./src/toolbox,./src/terrain,./src/shaders,./src/entities"
+" set makeprg=cd\ ~/Documents/perso/minecraftClone\ &&\ make
+let g:ycm_confirm_extra_conf=0

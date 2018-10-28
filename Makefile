@@ -39,7 +39,9 @@ OBJS=src/renderEngine/displayManager.o \
          src/world/block.o \
          src/terrain/terrain.o \
          src/guis/guirenderer.o \
-         src/guis/guitexture.o
+         src/guis/guitexture.o \
+         src/game/gameState.o \
+         src/game/game.o
 
 all: $(TARGET)
 

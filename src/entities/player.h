@@ -1,9 +1,10 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "glm/glm.hpp"
-#include "entities/Entity.h"
 #include "renderEngine/loader.h"
+#include "entities/Entity.h"
+#include <string>
+#include <glm/glm.hpp>
 
 class World;
 class MousePicker;

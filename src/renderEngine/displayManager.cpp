@@ -63,19 +63,19 @@ void DisplayManager::mainLoop()
     sf::Vector2i center(m_window->getSize().x / 2, m_window->getSize().y / 2);
     while (running)
     {
-        // gestion des évènements
+        // events
         sf::Event event;
         bool firstMouseMove = true;
         while (m_window->pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
             {
-                // on stoppe le programme
+                // exit code
                 running = false;
             }
             else if (event.type == sf::Event::Resized)
             {
-                // on ajuste le viewport lorsque la fenêtre est redimensionnée
+                // adjust window size
                 m_width = event.size.width;
                 m_height = event.size.height;
                 glViewport(0, 0, event.size.width, event.size.height);

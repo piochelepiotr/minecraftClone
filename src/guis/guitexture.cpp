@@ -5,7 +5,6 @@ GuiTexture::GuiTexture(GLuint id, const glm::vec2 &scale, const glm::vec2 &posit
     m_scale(scale),
     m_position(position)
 {
-
 }
 
 GLuint GuiTexture::id() const
