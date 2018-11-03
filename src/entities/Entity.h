@@ -1,6 +1,4 @@
-#ifndef ENTITY_H
-#define ENTITY_H
-
+#pragma once
 #include "models/texturedModel.h"
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
@@ -44,4 +42,3 @@ protected:
         int m_textureIndex;
 };
 
-#endif // ENTITY_H

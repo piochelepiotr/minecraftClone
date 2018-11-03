@@ -1,4 +1,5 @@
 #include "renderer.h"
+#include "shaders/staticShader.h"
 #include "toolbox/maths.h"
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>

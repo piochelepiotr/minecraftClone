@@ -1,7 +1,6 @@
-#ifndef P_H
-#define P_H
+#pragma once
 
-#include "glm/glm.hpp"
+#include <glm/glm.hpp>
 #include <ostream>
 
 class P
@@ -22,4 +21,3 @@ double distance(P const& p1, P const& p2);
 double distance(P const& p1, glm::vec3 const& p2);
 double distance(double x1, double y1, double z1, double x2, double y2, double z2);
 
-#endif // P_H

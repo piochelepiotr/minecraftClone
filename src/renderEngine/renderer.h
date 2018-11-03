@@ -1,12 +1,11 @@
-#ifndef RENDERER_H
-#define RENDERER_H
+#pragma once
 
-#include <GL/glew.h>
 #include "models/texturedModel.h"
-#include "entities/Entity.h"
 #include "shaders/staticShader.h"
-#include "entities/camera.h"
+#include "entities/Entity.h"
 #include <map>
+#include "entities/camera.h"
+#include <GL/glew.h>
 #include <vector>
 
 class EntityRenderer
@@ -23,4 +22,3 @@ class EntityRenderer
         glm::mat4 m_projectionMatrix;
 };
 
-#endif

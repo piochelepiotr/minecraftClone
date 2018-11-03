@@ -1,5 +1,6 @@
-#include "displayManager.h"
 #include <iostream>
+#include "displayManager.h"
+#include "toolbox/mousepicker.h"
 #include <SFML/Window.hpp>
 #include <SFML/OpenGL.hpp>
 #include "shaders/shaderProgram.h"
@@ -12,7 +13,6 @@
 #include "entities/player.h"
 #include "world/world.h"
 #include "guis/guitexture.h"
-#include "toolbox/mousepicker.h"
 #include <chrono>
 
 using namespace glm;
@@ -21,7 +21,8 @@ using namespace std;
 DisplayManager::DisplayManager(int width, int height, std::string title) : m_width(width),
                                                                            m_height(height),
                                                                            m_title(title),
-                                                                           m_window(0)
+                                                                           m_window(0),
+																		   m_gameState()
 {
     m_projection = perspective(70.0, (double)m_width / m_height, 1.0, 100.0);
     m_modelview = mat4(1.0);
@@ -115,6 +116,13 @@ void DisplayManager::mainLoop()
                 {
                 }
             }
+			else if (event.type == sf::Event::KeyPressed)
+			{
+				if (event.key.code == sf::Keyboard::Escape)
+				{
+					//m_gameState.changeState();
+				}
+			}
         }
 
         //glm::vec3 mouseRay = mousePicker.currentRay();

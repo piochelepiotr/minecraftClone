@@ -1,17 +1,19 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
+#include <SFML/Window.hpp>
+#include "loader.h"
 #include <string>
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <SFML/Window.hpp>
 #include <SFML/OpenGL.hpp>
-#include "loader.h"
 #include "renderer.h"
 #include "models/rawModel.h"
 #include "shaders/staticShader.h"
+#include "game/gameState.h"
+
 
 class DisplayManager
 {
@@ -30,6 +32,7 @@ class DisplayManager
         glm::mat4 m_modelview;
         sf::Window *m_window;
         Loader m_loader;
+		GameState m_gameState;
 };
 
 #endif

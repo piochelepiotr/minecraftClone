@@ -3,3 +3,5 @@
 main
 __pycache__
 pythonTests/image.png
+compile_commands.json
+.DS_Store
